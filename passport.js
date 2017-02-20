@@ -8,7 +8,6 @@ require('./model/db');
 passport.use(new LocalStrategy(authenticate));
 
 function authenticate (email, password, done) {
-  console.log(email);
   User.db.collection('tutorialFinderUsers').find({email}).toArray((err, user) => {
     if (err) return done(null, false, {message: err});
     if (user.length === 0 || !bcrypt.compareSync(password, user[0].password)) {
@@ -23,7 +22,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-  User.db.collection('users').find({_id: ObjectId(id)}).toArray((err, user) => {
+  User.db.collection('tutorialFinderUsers').find({_id: ObjectId(id)}).toArray((err, user) => {
     if (err) return done(null, false, {message: err});
     done(null, user);
   });
