@@ -5,11 +5,17 @@ export default class Login extends Component {
     return (
       <div>
         <form>
-          <label>Email:</label>
-          <input type='text' ref='username' />
-          <label>Password:</label>
-          <input type='password' ref='password' />
-          <button>Log In</button>
+          <div>
+            <label>Email:</label>
+            <input type='text' ref='username' />
+          </div>
+          <div>
+            <label>Password:</label>
+            <input type='password' ref='password' />
+          </div>
+          <div>
+            <button>Log In</button>
+          </div>
         </form>
       </div>
     );

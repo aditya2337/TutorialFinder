@@ -1,6 +1,11 @@
-const MongoClient = require('mongodb').MongoClient;
+const mongoose = require('mongoose');
+const config = require('./config');
 
-MongoClient.connect('mongodb://admin1:admin1@ds053206.mlab.com:53206/androiditya', (err, conn) => {
-  if (err) console.log(err);
-  module.exports.db = conn;
+mongoose.connect(config.dbUri);
+// plug in the promise library:
+mongoose.Promise = global.Promise;
+
+mongoose.connection.on('error', err => {
+  console.error(`Mongoose connection error: ${err}`);
+  process.exit(1);
 });
