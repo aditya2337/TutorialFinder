@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Authenticate from '../Authenticate';
+import { Redirect } from 'react-router-dom';
 
 export default class Login extends Component {
   constructor (props) {
@@ -20,6 +21,12 @@ export default class Login extends Component {
 
   render () {
     const { isLoggedIn } = this.state;
+    const { from } = this.props.location.state || { from: { pathname: '/home' } };
+    if (isLoggedIn) {
+      return (
+        <Redirect to={from} />
+      );
+    }
 
     return (
       <div>
