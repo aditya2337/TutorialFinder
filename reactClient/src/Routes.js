@@ -11,16 +11,19 @@ import Register from './components/Register';
 import Home from './components/Home';
 import Authenticate from './Authenticate';
 
-var checkAuth = Object.create(Authenticate);
-setTimeout(() => {
-  console.log(checkAuth.isAuthenticated);
-}, 3000);
-
 export default class Routes extends Component {
 
+  constructor (props) {
+    super(props);
+    this.state = {
+      isLoggedIn: false
+    };
+  }
+
   componentWillMount () {
-    checkAuth.checkSession();
-    console.log(checkAuth.isAuthenticated);
+    Authenticate.checkSession(() => {
+      this.setState({ isLoggedIn: true });
+    });
   }
 
   render () {
@@ -38,13 +41,10 @@ export default class Routes extends Component {
 }
 const PrivateRoute = ({ component, ...rest }) => (
   <Route {...rest} render={props => (
-      checkAuth.isAuthenticated ? (
+      Authenticate.isAuthenticated ? (
         React.createElement(component, props)
       ) : (
-        <Redirect to={{
-          pathname: '/login',
-          state: { from: props.location }
-        }} />
+        <p>Loading...</p>
       )
     )} />
 );

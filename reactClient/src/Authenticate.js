@@ -1,6 +1,6 @@
 const Auth = {
   isAuthenticated: false,
-  checkSession () {
+  checkSession (callback) {
     fetch(`http://localhost:3001/users/home`, {
       method: 'GET',
       credentials: 'include'
@@ -11,7 +11,8 @@ const Auth = {
         console.log(res);
         this.isAuthenticated = true;
       }
-    });
+    })
+    .then(setTimeout(callback, 500));
   },
   authenticate (username, password, callback) {
     fetch(`http://localhost:3001/users/login?username=${username.value}&password=${password.value}`, {
