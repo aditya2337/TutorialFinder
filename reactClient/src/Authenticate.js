@@ -7,12 +7,12 @@ const Auth = {
     })
     .then(res => res.json())
     .then(res => {
+      console.log(res);
       if (res.authenticated) {
-        console.log(res);
         this.isAuthenticated = true;
       }
     })
-    .then(setTimeout(callback, 500));
+    .then(setTimeout(callback, 2000));
   },
   authenticate (username, password, callback) {
     fetch(`http://localhost:3001/users/login?username=${username.value}&password=${password.value}`, {
@@ -38,6 +38,21 @@ const Auth = {
         Auth.isAuthenticated = false;
       }
     }).then(callback);
+  },
+  signup (email, password, fname, lname, callback) {
+    fetch(`http://localhost:3001/users/signup`, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({
+        username: email,
+        password: password,
+        fname: fname,
+        lname: lname
+      })
+    })
+    .then(res => res.json())
+    .then(res => console.log(res))
+    .then(callback);
   }
 };
 

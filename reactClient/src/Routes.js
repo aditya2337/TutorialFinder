@@ -33,7 +33,7 @@ export default class Routes extends Component {
           <Route exact={true} path='/' component={App} />
           <Route path='/login' component={Login} />
           <Route path='/register' component={Register} />
-          <PrivateRoute path='/home' component={Home} />
+          <PrivateRoute path='/home' component={Home} logOutUser={this.handleLogout} />
         </div>
       </Router>
     );

@@ -6,6 +6,7 @@ const ObjectId = require('mongodb').ObjectId;
 require('./model/db');
 
 passport.use(new LocalStrategy(authenticate));
+passport.use('local-register', new LocalStrategy({ passReqToCallback: true }, register));
 
 function authenticate (email, password, done) {
   User.db.collection('tutorialFinderUsers').find({email}).toArray((err, user) => {
@@ -13,12 +14,39 @@ function authenticate (email, password, done) {
     if (user.length === 0 || !bcrypt.compareSync(password, user[0].password)) {
       return done(null, false, {message: 'Invalid user and password combination'});
     }
-    done(null, user);
+    done(null, user[0]);
+  });
+}
+
+function register (req, email, password, done) {
+  User.db.collection('tutorialFinderUsers').findOne({email}, (err, user) => {
+    if (err) return done(null, false, {message: err});
+    if (user) {
+      return done(null, false, {message: 'an account with that email has already been created'});
+    }
+
+    // if there is no user with that email
+    // create the user
+    var newUser = new User();
+
+    // set the user's local credentials
+    newUser.fname = req.body.first_name;
+    newUser.lname = req.body.last_name;
+    newUser.email = email;
+    newUser.password = bcrypt.hashSync(password);
+
+    // save the user
+    newUser.save(function (err) {
+      if (err) {
+        throw err;
+      }
+      return done(null, newUser);
+    });
   });
 }
 
 passport.serializeUser((user, done) => {
-  done(null, user[0]._id);
+  done(null, user._id);
 });
 
 passport.deserializeUser((id, done) => {

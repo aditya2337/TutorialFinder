@@ -4,10 +4,15 @@ const session = require('express-session');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var MongoStore = require('connect-mongo')(session);
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 const config = require('./model/config');
+
+mongoose.createConnection(config.dbUri);
+var db = mongoose.connection;
 
 var app = express();
 
@@ -20,7 +25,13 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({ secret: config.secret, resave: false, cookie: { httpOnly: false }, saveUninitialized: false }));
+app.use(session({
+  secret: config.secret,
+  resave: false,
+  cookie: { httpOnly: false },
+  saveUninitialized: true,
+  store: new MongoStore({ mongooseConnection: db })
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
