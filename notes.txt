@@ -3,3 +3,4 @@
 3. Once logged in, the user must not be able to see the login form.
 4. Once logged in, the user must not be able to see the signup form.
 5. If the Login/Signup authentication fails, the user must be redirected to the Login page instead of 'Loading..' component.
+6. Use redux for the fetch and store the isAuthenticated at redux store/
