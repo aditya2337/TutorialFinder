@@ -1,0 +1,5 @@
+1. Store the cookie token instead of true/false for the sessions
+2. The logout button must redirect the user to login page and the handleLogout function must be in the Authenticate file.
+3. Once logged in, the user must not be able to see the login form.
+4. Once logged in, the user must not be able to see the signup form.
+5. If the Login/Signup authentication fails, the user must be redirected to the Login page instead of 'Loading..' component.
