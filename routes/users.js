@@ -91,6 +91,8 @@ router
       res.redirect('/users/login');
     });
   })
+
+  // signup
   .get('/signup', (req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.header('Access-Control-Allow-Credentials', true);
@@ -106,6 +108,16 @@ router
     successRedirect: '/users/home',
     failureRedirect: '/users/signup'
   }))
+
+  // OAUTH2
+  .get('/auth/twitter',
+  passport.authenticate('twitter'))
+  .get('/auth/twitter/callback',
+  passport.authenticate('twitter', { failureRedirect: '/login' }),
+  function (req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('http://localhost:3000/home');
+  })
 ;
 
 module.exports = router;

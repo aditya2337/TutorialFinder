@@ -3,10 +3,49 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('./model/schema/userSchema');
 const ObjectId = require('mongodb').ObjectId;
+const TwitterStrategy = require('passport-twitter').Strategy;
 require('./model/db');
 
 passport.use(new LocalStrategy(authenticate));
 passport.use('local-register', new LocalStrategy({ passReqToCallback: true }, register));
+passport.use(new TwitterStrategy(
+  {
+    consumerKey: 'ypqpIPNoN73iiqq4ptC9pzgjm',
+    consumerSecret: '0AwXcnBCKRnqaAdHmA5hIc0T7JemGi5HvLZ7L6hLehzLD9O9ba',
+    callbackURL: 'http://localhost:3001/users/auth/twitter/callback'
+  },
+  function (token, tokenSecret, profile, done) {
+    User.db.collection('tutorialFinderUsers').findOne({
+      oauth_provider: 'twitter',
+      oauth_id: profile.username
+    },
+    (err, user) => {
+      if (err) return done(null, false, {message: err});
+      if (user) {
+        return done(null, user);
+      }
+
+      // if there is no user with that email
+      // create the user
+      var newUser = new User();
+
+      // set the user's local credentials
+      newUser.oauth_provider = 'twitter';
+      newUser.oauth_id = profile.username;
+
+      // save the user
+      newUser.save(function (err) {
+        if (err) {
+          throw err;
+        }
+        return done(null, newUser);
+      });
+    });
+    // User.findOrCreate({ twitterId: profile.id }, function (err, user) {
+    //   return cb(err, user);
+    // });
+  }
+));
 
 function authenticate (email, password, done) {
   User.db.collection('tutorialFinderUsers').find({email}).toArray((err, user) => {

@@ -8,7 +8,9 @@ const UserSchema = new mongoose.Schema({
   },
   fname: String,
   lname: String,
-  password: String
+  password: String,
+  oauth_provider: String,
+  oauth_id: String
 },
 { collection: 'tutorialFinderUsers' }
 );
