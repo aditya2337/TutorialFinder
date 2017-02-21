@@ -19,6 +19,7 @@ function authenticate (email, password, done) {
 }
 
 function register (req, email, password, done) {
+  console.log(req.query);
   User.db.collection('tutorialFinderUsers').findOne({email}, (err, user) => {
     if (err) return done(null, false, {message: err});
     if (user) {
@@ -30,8 +31,8 @@ function register (req, email, password, done) {
     var newUser = new User();
 
     // set the user's local credentials
-    newUser.fname = req.body.first_name;
-    newUser.lname = req.body.last_name;
+    newUser.fname = req.query.first_name;
+    newUser.lname = req.query.last_name;
     newUser.email = email;
     newUser.password = bcrypt.hashSync(password);
 

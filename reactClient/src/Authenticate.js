@@ -40,18 +40,16 @@ const Auth = {
     }).then(callback);
   },
   signup (email, password, fname, lname, callback) {
-    fetch(`http://localhost:3001/users/signup`, {
+    fetch(`http://localhost:3001/users/signup?username=${email}&password=${password}&first_name=${fname}&last_name=${lname}`, {
       method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify({
-        username: email,
-        password: password,
-        fname: fname,
-        lname: lname
-      })
+      credentials: 'include'
     })
     .then(res => res.json())
-    .then(res => console.log(res))
+    .then(res => {
+      if (res.authenticated) {
+        Auth.isAuthenticated = true;
+      }
+    })
     .then(callback);
   }
 };
