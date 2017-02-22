@@ -30,7 +30,8 @@ export default class Routes extends Component {
     return (
       <Router>
         <div>
-          <Route exact={true} path='/' component={App} />
+          <App />
+          <Route exact={true} path='/' />
           <Route path='/login' component={Login} />
           <Route path='/register' component={Register} />
           <PrivateRoute path='/home' component={Home} logOutUser={this.handleLogout} />
