@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Authenticate from '../Authenticate';
 import { Redirect } from 'react-router-dom';
+import TextField from 'material-ui/TextField';
 
 export default class Login extends Component {
   constructor (props) {
@@ -13,7 +14,9 @@ export default class Login extends Component {
 
   login (e) {
     e.preventDefault();
-    const { username, password } = this.refs;
+    let { username, password } = this.refs;
+    username = username.getValue();
+    password = password.getValue();
     Authenticate.authenticate(username, password, () => {
       this.setState({ isLoggedIn: true });
     });
@@ -29,15 +32,24 @@ export default class Login extends Component {
     }
 
     return (
-      <div>
+      <div className='container-fluid'>
         <form onSubmit={this.login}>
           <div>
             <label>Email:</label>
-            <input type='text' ref='username' />
+            <TextField
+              hintText='abc@abc.com'
+              floatingLabelText='Email'
+              ref='username'
+            />
           </div>
           <div>
             <label>Password:</label>
-            <input type='password' ref='password' />
+            <TextField
+              hintText='*****'
+              floatingLabelText='Password'
+              ref='password'
+              type='password'
+            />
           </div>
           <div>
             <button>Log In</button>

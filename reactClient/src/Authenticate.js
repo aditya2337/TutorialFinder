@@ -15,7 +15,7 @@ const Auth = {
     .then(setTimeout(callback, 2000));
   },
   authenticate (username, password, callback) {
-    fetch(`http://localhost:3001/users/login?username=${username.value}&password=${password.value}`, {
+    fetch(`http://localhost:3001/users/login?username=${username}&password=${password}`, {
       method: 'POST',
       credentials: 'include'
     })

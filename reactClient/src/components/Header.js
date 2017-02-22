@@ -28,16 +28,21 @@ export default class header extends Component {
   render () {
     return (
       <div>
-        <AppBar onLeftIconButtonTouchTap={this._toggle} title='Turorial finder' />
-        <Drawer
-          docked={false}
-          open={this.state.open}
-          onRequestChange={(open) => this.setState({open})}
-        >
-          <Link to='/login'><MenuItem onTouchTap={this.handleClose}>Log In</MenuItem></Link>
-          <Link to='/login'><MenuItem onTouchTap={this.handleClose}>Register</MenuItem></Link>
-          <a href='http://localhost:3001/users/auth/twitter'><MenuItem>Log In/Sign Up with twitter</MenuItem></a>
-        </Drawer>
+        <div>
+          <AppBar onLeftIconButtonTouchTap={this._toggle} title='Turorial finder' />
+          <Drawer
+            docked={false}
+            open={this.state.open}
+            onRequestChange={(open) => this.setState({open})}
+          >
+            <MenuItem onTouchTap={this.handleClose} containerElement={<Link to='/login' />}>Log In</MenuItem>
+            <MenuItem onTouchTap={this.handleClose} containerElement={<Link to='/register' />}>Register</MenuItem>
+            <MenuItem containerElement={<Link to='http://localhost:3001/users/auth/twitter' />}>Log In/Sign Up with twitter</MenuItem>
+          </Drawer>
+        </div>
+        <div className='container'>
+          {this.props.children}
+        </div>
       </div>
     );
   }

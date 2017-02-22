@@ -1,51 +1,58 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router,
-  Route,
-  Redirect
+  Route
 } from 'react-router-dom';
 
-import App from './App';
 import Login from './components/Login';
 import Register from './components/Register';
 import Home from './components/Home';
+import Header from './components/Header';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Authenticate from './Authenticate';
+import App from './App';
+import {cyan500} from 'material-ui/styles/colors';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
 
-export default class Routes extends Component {
-
-  constructor (props) {
-    super(props);
-    this.state = {
-      isLoggedIn: false
-    };
+const muiTheme = getMuiTheme({
+  palette: {
+    textColor: cyan500
+  },
+  appBar: {
+    height: 50
   }
+});
 
-  componentWillMount () {
-    Authenticate.checkSession(() => {
-      this.setState({ isLoggedIn: true });
-    });
-  }
+let link = false;
+Authenticate.checkSession(() => {
+  link = true;
+  console.log(link);
+});
 
-  render () {
-    return (
-      <Router>
-        <div>
-          <App />
-          <Route exact={true} path='/' />
-          <Route path='/login' component={Login} />
-          <Route path='/register' component={Register} />
-          <PrivateRoute path='/home' component={Home} logOutUser={this.handleLogout} />
-        </div>
-      </Router>
-    );
-  }
-}
+const Routes = () => (
+  <MuiThemeProvider muiTheme={muiTheme}>
+    <Router>
+      <div>
+        <Header />
+        <Route exact={true} path='/' component={App} />
+        <Route path='/login' component={Login} />
+        <Route path='/register' component={Register} />
+        <PrivateRoute path='/home' component={Home} />
+      </div>
+    </Router>
+  </MuiThemeProvider>
+);
+
 const PrivateRoute = ({ component, ...rest }) => (
   <Route {...rest} render={props => (
-      Authenticate.isAuthenticated ? (
+      link ? (
         React.createElement(component, props)
       ) : (
-        <p>Loading...</p>
+        <p>Loading...{link}haha</p>
       )
     )} />
 );
+
+export default Routes;
