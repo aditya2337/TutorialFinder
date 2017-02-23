@@ -1,43 +1,46 @@
-export const SELECT_SUBREDDIT = 'SELECT_SUBREDDIT';
-export const INVALIDATE_SUBREDDIT = 'INVALIDATE_SUBREDDIT';
 export const REQUEST_POSTS = 'REQUEST_POSTS';
 export const RECEIVE_POSTS = 'RECEIVE_POSTS';
+export const SELECT_REDDIT = 'SELECT_REDDIT';
+export const INVALIDATE_REDDIT = 'INVALIDATE_REDDIT';
 
-export function selectSubreddit (subreddit) {
-  return {
-    type: SELECT_SUBREDDIT,
-    subreddit
-  };
-}
+export const selectReddit = reddit => ({
+  type: SELECT_REDDIT,
+  reddit
+});
 
-export function invalidateSubreddit (subreddit) {
-  return {
-    type: INVALIDATE_SUBREDDIT,
-    subreddit
-  };
-}
+export const invalidateReddit = reddit => ({
+  type: INVALIDATE_REDDIT,
+  reddit
+});
 
-function requestPosts (subreddit) {
+function requestPosts (email) {
   return {
     type: REQUEST_POSTS,
-    subreddit
+    email
   };
 }
 
-function receivePosts (subreddit, json) {
+function receivePosts (email, json) {
   return {
     type: RECEIVE_POSTS,
-    subreddit,
-    posts: json.data.children.map(child => child.data),
+    email,
+    posts: json,
     receivedAt: Date.now()
   };
 }
 
-const fetchPosts = reddit => dispatch => {
-  dispatch(requestPosts(reddit));
-  return fetch(`https://www.reddit.com/r/${reddit}.json`)
+const fetchPosts = (username) => dispatch => {
+  dispatch(requestPosts(username));
+  return fetch(`http://localhost:3001/users/home`, {
+    method: 'GET',
+    credentials: 'include'
+  })
     .then(response => response.json())
-    .then(json => dispatch(receivePosts(reddit, json)));
+    .then(json => {
+      console.log(json);
+      dispatch(receivePosts(username, json));
+      dispatch(selectReddit(json.authenticated));
+    });
 };
 
 const shouldFetchPosts = (state, reddit) => {
@@ -51,8 +54,8 @@ const shouldFetchPosts = (state, reddit) => {
   return posts.didInvalidate;
 };
 
-export const fetchPostsIfNeeded = reddit => (dispatch, getState) => {
-  if (shouldFetchPosts(getState(), reddit)) {
-    return dispatch(fetchPosts(reddit));
+export const fetchPostsIfNeeded = (username, password) => (dispatch, getState) => {
+  if (shouldFetchPosts(getState(), username)) {
+    return dispatch(fetchPosts(username, password));
   }
 };

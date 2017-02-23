@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
+import { Tab } from 'material-ui/Tabs';
 
 export default class header extends Component {
   constructor (props) {
@@ -13,6 +14,7 @@ export default class header extends Component {
     };
     this._toggle = this._toggle.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.handletitletouch = this.handletitletouch.bind(this);
   }
 
   _toggle (e) {
@@ -25,11 +27,25 @@ export default class header extends Component {
     this.setState({open: false});
   }
 
+  handletitletouch (e) {
+    e.preventDefault();
+    console.log('title touched');
+  }
+
   render () {
+    const title = (
+      <Link to='/'>
+        <Tab label='Tutorial Finder' style={{ color: 'white' }} />
+      </Link>
+    );
+
     return (
       <div>
         <div>
-          <AppBar onLeftIconButtonTouchTap={this._toggle} title='Turorial finder' />
+          <AppBar onLeftIconButtonTouchTap={this._toggle}
+            title={title}
+            onTitleTouchTap={this.handletitletouch}
+          />
           <Drawer
             docked={false}
             open={this.state.open}

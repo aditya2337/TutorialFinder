@@ -1,16 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Routes from './Routes';
 import './index.css';
 import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import reducer from './store/reducers';
-import { fetchPostsIfNeeded } from './store/actions';
-import createHistory from 'history/createBrowserHistory';
-
-const history = createHistory();
+import Routes from './Routes';
+import { Provider } from 'react-redux';
 
 const middleware = [ thunk ];
 if (process.env.NODE_ENV !== 'production') {
@@ -22,13 +18,15 @@ const store = createStore(
   applyMiddleware(...middleware)
 );
 
-store.dispatch(fetchPostsIfNeeded('reactjs')).then(() =>
-  console.log(store.getState())
-);
+// store.dispatch(fetchPosts(store.getState(), 'androiditya@gmail.com', 'aditya337')).then(() => {
+//   loggedIn = store.getState();
+//   console.log(store.getState());
+//   console.log(loggedIn.selectedReddit);
+// });
 
 ReactDOM.render(
   <Provider store={store}>
-    <Routes history={history} />
+    <Routes />
   </Provider>,
   document.getElementById('root')
 );

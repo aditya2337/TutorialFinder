@@ -8,7 +8,6 @@ export default class Home extends Component {
     this.state = {
       isLoggedIn: false
     };
-
     this.handleLogout = this.handleLogout.bind(this);
   }
 
@@ -25,6 +24,7 @@ export default class Home extends Component {
           isLoggedIn: false
         });
       }
+      console.log('h');
     });
   }
 
@@ -38,10 +38,12 @@ export default class Home extends Component {
     }
 
     return (
-      <div>
-        Welcome!
-        <div>
-          <button onClick={this.handleLogout}>Logout</button>
+      <div className='container'>
+        <div className='center'>
+          Welcome!
+          <div>
+            <button onClick={this.handleLogout}>Logout</button>
+          </div>
         </div>
       </div>
     );
