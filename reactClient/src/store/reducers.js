@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux';
 import {
-  SELECT_REDDIT, INVALIDATE_REDDIT,
-  REQUEST_POSTS, RECEIVE_POSTS
+  IS_LOGGEDIN, REFRESH,
+  REQUEST_SESSION, RECEIVE_SESSION
 } from './actions';
 
-const selectedReddit = (state = false, action) => {
+const selectedSession = (state = false, action) => {
   switch (action.type) {
-    case SELECT_REDDIT:
-      return action.reddit;
+    case IS_LOGGEDIN:
+      return action.session;
     default:
       return state;
   }
@@ -19,18 +19,19 @@ const posts = (state = {
   items: []
 }, action) => {
   switch (action.type) {
-    case INVALIDATE_REDDIT:
+    case REFRESH:
       return {
         ...state,
         didInvalidate: true
       };
-    case REQUEST_POSTS:
+    case REQUEST_SESSION:
       return {
         ...state,
         isFetching: true,
         didInvalidate: false
       };
-    case RECEIVE_POSTS:
+    case RECEIVE_SESSION:
+      console.log('received');
       return {
         ...state,
         isFetching: false,
@@ -43,14 +44,15 @@ const posts = (state = {
   }
 };
 
-const postsByReddit = (state = { }, action) => {
+const postsBySession = (state = { }, action) => {
+  console.log(action);
   switch (action.type) {
-    case INVALIDATE_REDDIT:
-    case RECEIVE_POSTS:
-    case REQUEST_POSTS:
+    case REFRESH:
+    case RECEIVE_SESSION:
+    case REQUEST_SESSION:
       return {
         ...state,
-        [action.reddit]: posts(state[action.reddit], action)
+        [action.session]: posts(state[action.session], action)
       };
     default:
       return state;
@@ -58,8 +60,8 @@ const postsByReddit = (state = { }, action) => {
 };
 
 const rootReducer = combineReducers({
-  postsByReddit,
-  selectedReddit
+  postsBySession,
+  selectedSession
 });
 
 export default rootReducer;

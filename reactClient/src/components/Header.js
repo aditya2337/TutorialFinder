@@ -35,7 +35,12 @@ export default class header extends Component {
   render () {
     const title = (
       <Link to='/'>
-        <Tab label='Tutorial Finder' style={{ color: 'white' }} />
+        <Tab label='Tutorial Finder' style={{
+          color: 'white',
+          height: '100%',
+          width: '20rem',
+          fontWeight: 'bold'
+        }} />
       </Link>
     );
 

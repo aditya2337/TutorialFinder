@@ -1,36 +1,36 @@
-export const REQUEST_POSTS = 'REQUEST_POSTS';
-export const RECEIVE_POSTS = 'RECEIVE_POSTS';
-export const SELECT_REDDIT = 'SELECT_REDDIT';
-export const INVALIDATE_REDDIT = 'INVALIDATE_REDDIT';
+export const REQUEST_SESSION = 'REQUEST_SESSION';
+export const RECEIVE_SESSION = 'RECEIVE_SESSION';
+export const IS_LOGGEDIN = 'IS_LOGGEDIN';
+export const REFRESH = 'REFRESH';
 
-export const selectReddit = reddit => ({
-  type: SELECT_REDDIT,
-  reddit
+export const selectState = session => ({
+  type: IS_LOGGEDIN,
+  session
 });
 
-export const invalidateReddit = reddit => ({
-  type: INVALIDATE_REDDIT,
-  reddit
+export const refreshSession = session => ({
+  type: REFRESH,
+  session
 });
 
-function requestPosts (email) {
+function requestSession (email) {
   return {
-    type: REQUEST_POSTS,
+    type: REQUEST_SESSION,
     email
   };
 }
 
-function receivePosts (email, json) {
+function receiveSession (email, json) {
   return {
-    type: RECEIVE_POSTS,
+    type: RECEIVE_SESSION,
     email,
     posts: json,
     receivedAt: Date.now()
   };
 }
 
-const fetchPosts = (username) => dispatch => {
-  dispatch(requestPosts(username));
+const fetchSession = (username) => dispatch => {
+  dispatch(requestSession(username));
   return fetch(`http://localhost:3001/users/home`, {
     method: 'GET',
     credentials: 'include'
@@ -38,13 +38,13 @@ const fetchPosts = (username) => dispatch => {
     .then(response => response.json())
     .then(json => {
       console.log(json);
-      dispatch(receivePosts(username, json));
-      dispatch(selectReddit(json.authenticated));
+      dispatch(receiveSession(username, json));
+      dispatch(selectState(json.authenticated));
     });
 };
 
-const shouldFetchPosts = (state, reddit) => {
-  const posts = state.postsByReddit[reddit];
+const shouldfetchSession = (state, session) => {
+  const posts = state.postsBySession[session];
   if (!posts) {
     return true;
   }
@@ -54,8 +54,8 @@ const shouldFetchPosts = (state, reddit) => {
   return posts.didInvalidate;
 };
 
-export const fetchPostsIfNeeded = (username, password) => (dispatch, getState) => {
-  if (shouldFetchPosts(getState(), username)) {
-    return dispatch(fetchPosts(username, password));
+export const fetchSessionIfNeeded = (username, password) => (dispatch, getState) => {
+  if (shouldfetchSession(getState(), username)) {
+    return dispatch(fetchSession(username, password));
   }
 };

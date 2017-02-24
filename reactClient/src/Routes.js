@@ -5,7 +5,7 @@ import {
   Redirect
 } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { fetchPostsIfNeeded } from './store/actions';
+import { fetchSessionIfNeeded } from './store/actions';
 
 import Login from './components/Login';
 import Register from './components/Register';
@@ -31,7 +31,7 @@ const muiTheme = getMuiTheme({
 
 class Routes extends Component {
   static propTypes = {
-    selectedReddit: PropTypes.bool.isRequired,
+    selectedSession: PropTypes.bool.isRequired,
     posts: PropTypes.array.isRequired,
     isFetching: PropTypes.bool.isRequired,
     lastUpdated: PropTypes.number,
@@ -39,16 +39,15 @@ class Routes extends Component {
   }
 
   componentDidMount () {
-    const { dispatch, selectedReddit } = this.props;
-    dispatch(fetchPostsIfNeeded('androiditya@gmail.com', 'aditya337'));
-    console.log(selectedReddit);
+    const { dispatch, selectedSession } = this.props;
+    dispatch(fetchSessionIfNeeded('androiditya@gmail.com', 'aditya337'));
+    console.log(selectedSession);
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log(nextProps);
-    if (nextProps.selectedReddit !== this.props.selectedReddit) {
+    if (nextProps.selectedSession !== this.props.selectedSession) {
       const { dispatch } = nextProps;
-      dispatch(fetchPostsIfNeeded('androiditya@gmail.com', 'aditya337'));
+      dispatch(fetchSessionIfNeeded('androiditya@gmail.com', 'aditya337'));
     }
 
     Authenticate.isFetching = nextProps.isFetching;
@@ -85,18 +84,19 @@ const PrivateRoute = ({ component, ...rest }) => (
 );
 
 const mapStateToProps = state => {
-  const { selectedReddit, postsByReddit } = state;
+  const { selectedSession, postsBySession } = state;
+  console.log('postsBySession' ,postsBySession);
   const {
     isFetching,
     lastUpdated,
     items: posts
-  } = postsByReddit['undefined'] || {
+  } = postsBySession['undefined'] || {
     isFetching: true,
     items: []
   };
 
   return {
-    selectedReddit,
+    selectedSession,
     posts,
     isFetching,
     lastUpdated
