@@ -71,7 +71,9 @@ router
     res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.header('Access-Control-Allow-Credentials', true);
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    res.json({name: 'login again'});
+    res.json({name: 'login again',
+      authenticated: req.isAuthenticated()
+    });
   })
   .post('/login', (req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -97,7 +99,9 @@ router
     res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.header('Access-Control-Allow-Credentials', true);
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    res.json({name: 'signup again'});
+    res.json({name: 'signup again',
+      authenticated: req.isAuthenticated()
+    });
   })
   .post('/signup', (req, res, next) => {
     res.header('Access-Control-Allow-Credentials', true);

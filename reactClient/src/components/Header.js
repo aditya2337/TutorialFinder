@@ -1,20 +1,47 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import { Tab } from 'material-ui/Tabs';
+import { signOutUserIfNeeded, fetchSessionIfNeeded } from '../store/actions';
+import { connect } from 'react-redux';
+import Authenticate from '../Authenticate';
 
-export default class header extends Component {
+class Header extends Component {
   constructor (props) {
     super(props);
 
     this.state = {
-      open: false
+      open: false,
+      isLoggedIn: true
     };
     this._toggle = this._toggle.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handletitletouch = this.handletitletouch.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+  }
+
+  static propTypes = {
+    selectedSession: PropTypes.bool.isRequired,
+    posts: PropTypes.array.isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    lastUpdated: PropTypes.number,
+    dispatch: PropTypes.func.isRequired
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.selectedSession !== this.props.selectedSession) {
+      const { dispatch } = nextProps;
+      dispatch(fetchSessionIfNeeded('androiditya@gmail.com', 'aditya337'));
+    }
+
+    Authenticate.isFetching = nextProps.isFetching;
+    Authenticate.isAuthenticated = nextProps.posts.authenticated;
+
+    if (!Authenticate.isAuthenticated) {
+      this.setState({ isLoggedIn: false, open: false });
+    }
   }
 
   _toggle (e) {
@@ -32,6 +59,13 @@ export default class header extends Component {
     console.log('title touched');
   }
 
+  handleLogout (e) {
+    e.preventDefault();
+    const { dispatch } = this.props;
+    dispatch(signOutUserIfNeeded('androiditya'));
+    this.setState({ isLoggedIn: false, open: false });
+  }
+
   render () {
     const title = (
       <Link to='/'>
@@ -42,6 +76,16 @@ export default class header extends Component {
           fontWeight: 'bold'
         }} />
       </Link>
+    );
+
+    const menuItems = (Authenticate.isAuthenticated) ? (
+      <MenuItem onTouchTap={this.handleLogout} containerElement={<Link to='/login' />}>Log Out</MenuItem>
+    ) : (
+      <div>
+        <MenuItem onTouchTap={this.handleClose} containerElement={<Link to='/login' />}>Log In</MenuItem>
+        <MenuItem onTouchTap={this.handleClose} containerElement={<Link to='/register' />}>Register</MenuItem>
+        <MenuItem><a href='http://localhost:3001/users/auth/twitter'>Log In/Sign Up with twitter</a></MenuItem>
+      </div>
     );
 
     return (
@@ -56,9 +100,7 @@ export default class header extends Component {
             open={this.state.open}
             onRequestChange={(open) => this.setState({open})}
           >
-            <MenuItem onTouchTap={this.handleClose} containerElement={<Link to='/login' />}>Log In</MenuItem>
-            <MenuItem onTouchTap={this.handleClose} containerElement={<Link to='/register' />}>Register</MenuItem>
-            <MenuItem containerElement={<Link to='http://localhost:3001/users/auth/twitter' />}>Log In/Sign Up with twitter</MenuItem>
+            {menuItems}
           </Drawer>
         </div>
         <div className='container'>
@@ -68,3 +110,24 @@ export default class header extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const { selectedSession, postsBySession } = state;
+  const {
+    isFetching,
+    lastUpdated,
+    items: posts
+  } = postsBySession['undefined'] || {
+    isFetching: true,
+    items: []
+  };
+
+  return {
+    selectedSession,
+    posts,
+    isFetching,
+    lastUpdated
+  };
+};
+
+export default connect(mapStateToProps)(Header);

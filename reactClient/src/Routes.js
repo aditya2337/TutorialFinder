@@ -39,9 +39,8 @@ class Routes extends Component {
   }
 
   componentDidMount () {
-    const { dispatch, selectedSession } = this.props;
+    const { dispatch } = this.props;
     dispatch(fetchSessionIfNeeded('androiditya@gmail.com', 'aditya337'));
-    console.log(selectedSession);
   }
 
   componentWillReceiveProps (nextProps) {
@@ -85,7 +84,6 @@ const PrivateRoute = ({ component, ...rest }) => (
 
 const mapStateToProps = state => {
   const { selectedSession, postsBySession } = state;
-  console.log('postsBySession' ,postsBySession);
   const {
     isFetching,
     lastUpdated,
