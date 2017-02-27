@@ -11,6 +11,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Home from './components/Home';
 import Header from './components/Header';
+import AddTutorial from './components/AddTutorial';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Authenticate from './Authenticate';
 import App from './App';
@@ -59,9 +60,10 @@ class Routes extends Component {
         <Router>
           <div>
             <Header />
-            <Route exact={true} path='/' component={App} />
+            <Route exact={true} path='/' component={Home} />
             <Route path='/login' component={Login} />
             <Route path='/register' component={Register} />
+            <Route path='/add-tutorial' component={AddTutorial} />
             <PrivateRoute path='/home' component={Home} />
           </div>
         </Router>

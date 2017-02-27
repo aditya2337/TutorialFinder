@@ -1,3 +1,13 @@
+*---------------------------------------------------------------------------------------------------*
+| My thoughts so far for database schema are:                                                       |
+| 1. link to tutorial                                                                               |
+| 2. Checkboxes for type of tutorial. Option are Mong, React, Redux,  Express, Node.                |
+|    You can select more than one. Based on your selection you will get a default picture           |
+| 3. Link to upload photo to change default (so that it achieves same result as pintrest project)   |
+| 4. optional link to working demo of tutorial                                                      |
+| 5. optional link to github repo of source code                                                    |
+*---------------------------------------------------------------------------------------------------*
+
 1. Store the cookie token instead of true/false for the sessions
 2. The logout button must redirect the user to login page and the handleLogout function must be in the Authenticate file.
 3. Once logged in, the user must not be able to see the login form.
