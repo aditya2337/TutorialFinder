@@ -6,7 +6,7 @@ import { fetchSessionIfNeeded } from '../store/actions';
 import CircularProgress from 'material-ui/CircularProgress';
 import Tutorial from './Tutorial';
 
-class Home extends Component {
+class MyPosts extends Component {
   constructor (props) {
     super(props);
 
@@ -23,15 +23,15 @@ class Home extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (!Array.isArray(nextProps.posts)) {
-      console.log(nextProps);
-      fetch(`http://localhost:3001/users/tutorial`, {
+      const id = nextProps.posts.user[0]._id;
+      fetch(`http://localhost:3001/users/tutorial/${id}`, {
         method: 'GET',
         credentials: 'include'
       })
       .then(response => response.json())
       .then(json => {
-        console.log(json);
         this.setState({ tutorials: json.tutorials });
+        console.log(json);
       });
       if (!nextProps.posts.authenticated) {
         this.setState({ isLoggedIn: false });
@@ -87,4 +87,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps)(MyPosts);

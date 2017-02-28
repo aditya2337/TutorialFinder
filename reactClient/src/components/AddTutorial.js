@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { registerUserIfNeeded } from '../store/actions';
 import { Redirect } from 'react-router-dom';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -18,9 +17,14 @@ class AddTutorial extends Component {
     super(props);
     this.state = {
       isSignedUp: false,
-      uploadedFileCloudinaryUrl: ''
+      uploadedFileCloudinaryUrl: '',
+      _tutorialLink: null,
+      _tutorialTitle: null,
+      _tutorialType: null,
+      isPosting: false,
+      isPosted: false
     };
-    this.handleSignup = this.handleSignup.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleImageUpload = this.handleImageUpload.bind(this);
@@ -35,12 +39,16 @@ class AddTutorial extends Component {
     this.setState({open: false});
   }
 
-  handleSignup (e) {
+  handleSubmit (e) {
+    this.state._tutorialType = null;
+    this.state._tutorialLink = null;
+    this.state._tutorialTitle = null;
+    let post = true;
     e.preventDefault();
     let { mongoCheckbox, reactCheckbox, reduxCheckbox, expressCheckbox, nodeCheckbox } = this.refs;
     let { tutorialTitle, tutorialLink, demoLink, githubLink } = this.refs;
     let typeOfTutorials = [mongoCheckbox, reactCheckbox, reduxCheckbox, expressCheckbox, nodeCheckbox];
-
+    const { posts } = this.props;
     tutorialLink = tutorialLink.getValue();
     tutorialTitle = tutorialTitle.getValue();
     demoLink = demoLink.getValue();
@@ -54,16 +62,32 @@ class AddTutorial extends Component {
 
     let image = this.state.uploadedFileCloudinaryUrl;
     console.log(tutorialLink, tutorialTitle, demoLink, githubLink, image, typeOfTutorials);
-
-    fetch(`http://localhost:3001/users/tutorial?tutorialLink=${tutorialLink}&tutorialTitle=${tutorialTitle}&demoLink=${demoLink}&githubLink=${githubLink}&image=${image}&typeOfTutorials=${typeOfTutorials}`, {
-      method: 'POST',
-      credentials: 'include'
-    })
-    .then(response => response.json())
-    .then(json => {
-      console.log(json);
-    });
-    // dispatch(registerUserIfNeeded(username, password, firstName, lastName));
+    if (!tutorialLink) {
+      this.setState({ _tutorialLink: 'Please submit a valid tutorial link' });
+      post = false;
+    }
+    if (!tutorialTitle) {
+      this.setState({ _tutorialTitle: 'Please submit a valid tutorial title' });
+      post = false;
+    }
+    if (typeOfTutorials.length === 0) {
+      this.setState({ _tutorialType: 'Please select at least one type of tutorial' });
+      post = false;
+    }
+    if (post) {
+      this.setState({ isPosting: true });
+      fetch(`http://localhost:3001/users/tutorial?tutorialLink=` +
+        `${tutorialLink}&tutorialTitle=${tutorialTitle}&demoLink=${demoLink}` +
+        `&githubLink=${githubLink}&image=${image}&typeOfTutorials=${typeOfTutorials}` +
+        `&userId=${posts.user[0]._id}`, {
+          method: 'POST',
+          credentials: 'include'
+        })
+      .then(response => response.json())
+      .then(json => {
+        this.setState({ isPosting: false, isPosted: true });
+      });
+    }
   }
 
   onImageDrop (files) {
@@ -102,33 +126,34 @@ class AddTutorial extends Component {
       />
     ];
 
-    const { isSignedUp } = this.state;
+    const { isPosting, isPosted } = this.state;
     const { isFetching } = this.props;
-    const { from } = this.props.location.state || { from: { pathname: '/home' } };
-    if (isSignedUp) {
+    const { from } = { from: { pathname: '/my-posts' } };
+    if (isPosted) {
       return (
         <Redirect to={from} />
       );
     }
 
-    // if (isFetching) {
-    //   return (
-    //     <div className='container'>
-    //       <CircularProgress size={80} thickness={5} />
-    //     </div>
-    //   );
-    // }
+    if (isFetching || isPosting) {
+      return (
+        <div className='container'>
+          <CircularProgress size={80} thickness={5} />
+        </div>
+      );
+    }
 
     return (
       <div className='container-fluid'>
         <div className='row'>
           <div className='col-md-6'>
-            <form onSubmit={this.handleSignup}>
+            <form onSubmit={this.handleSubmit}>
               <div>
                 <TextField
                   hintText='MERN'
                   floatingLabelText='Title'
                   ref='tutorialTitle'
+                  errorText={this.state._tutorialTitle}
                 />
               </div>
               <div>
@@ -136,6 +161,7 @@ class AddTutorial extends Component {
                   hintText='http://tutsplus.com/mern'
                   floatingLabelText='Tutorial Link'
                   ref='tutorialLink'
+                  errorText={this.state._tutorialLink}
                 />
               </div>
               <div>
@@ -159,6 +185,9 @@ class AddTutorial extends Component {
                   label='Node'
                   ref='nodeCheckbox'
                 />
+              </div>
+              <div className='checkbox-error'>
+                {this.state._tutorialType}
               </div>
               <div>
                 <RaisedButton label='Upload Image' onTouchTap={this.handleOpen} />

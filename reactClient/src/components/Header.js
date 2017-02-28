@@ -80,8 +80,9 @@ class Header extends Component {
 
     const menuItems = (Authenticate.isAuthenticated) ? (
       <div>
-        <MenuItem onTouchTap={this.handleLogout} containerElement={<Link to='/home' />}>Log Out</MenuItem>
         <MenuItem onTouchTap={this.handleClose} containerElement={<Link to='/add-tutorial' />}>Add Tutorial</MenuItem>
+        <MenuItem onTouchTap={this.handleClose} containerElement={<Link to='/my-posts' />}>My Posts</MenuItem>
+        <MenuItem onTouchTap={this.handleLogout} containerElement={<Link to='/home' />}>Log Out</MenuItem>
       </div>
     ) : (
       <div>
