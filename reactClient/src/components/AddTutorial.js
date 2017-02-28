@@ -37,13 +37,33 @@ class AddTutorial extends Component {
 
   handleSignup (e) {
     e.preventDefault();
-    let { username, password, firstName, lastName } = this.refs;
-    username = username.getValue();
-    password = password.getValue();
-    firstName = firstName.getValue();
-    lastName = lastName.getValue();
-    const { dispatch } = this.props;
-    dispatch(registerUserIfNeeded(username, password, firstName, lastName));
+    let { mongoCheckbox, reactCheckbox, reduxCheckbox, expressCheckbox, nodeCheckbox } = this.refs;
+    let { tutorialTitle, tutorialLink, demoLink, githubLink } = this.refs;
+    let typeOfTutorials = [mongoCheckbox, reactCheckbox, reduxCheckbox, expressCheckbox, nodeCheckbox];
+
+    tutorialLink = tutorialLink.getValue();
+    tutorialTitle = tutorialTitle.getValue();
+    demoLink = demoLink.getValue();
+    githubLink = githubLink.getValue();
+    typeOfTutorials = typeOfTutorials.reduce((total, val) => {
+      if (val.state.switched) {
+        total.push(val.props.label);
+      }
+      return total;
+    }, []);
+
+    let image = this.state.uploadedFileCloudinaryUrl;
+    console.log(tutorialLink, tutorialTitle, demoLink, githubLink, image, typeOfTutorials);
+
+    fetch(`http://localhost:3001/users/tutorial?tutorialLink=${tutorialLink}&tutorialTitle=${tutorialTitle}&demoLink=${demoLink}&githubLink=${githubLink}&image=${image}&typeOfTutorials=${typeOfTutorials}`, {
+      method: 'POST',
+      credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    });
+    // dispatch(registerUserIfNeeded(username, password, firstName, lastName));
   }
 
   onImageDrop (files) {
@@ -121,18 +141,23 @@ class AddTutorial extends Component {
               <div>
                 <Checkbox
                   label='Mongo'
+                  ref='mongoCheckbox'
                 />
                 <Checkbox
                   label='React'
+                  ref='reactCheckbox'
                 />
                 <Checkbox
                   label='Redux'
+                  ref='reduxCheckbox'
                 />
                 <Checkbox
                   label='Express'
+                  ref='expressCheckbox'
                 />
                 <Checkbox
                   label='Node'
+                  ref='nodeCheckbox'
                 />
               </div>
               <div>
@@ -174,7 +199,7 @@ class AddTutorial extends Component {
                 />
               </div>
               <div className='form-group'>
-                <RaisedButton type='submit' label='Register' primary={true} />
+                <RaisedButton type='submit' label='Add Tutorial' primary={true} />
               </div>
             </form>
           </div>
