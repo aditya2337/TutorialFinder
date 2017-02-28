@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, CardMedia, CardTitle, CardText } from 'material-ui/Card';
+import { Card, CardMedia, CardTitle } from 'material-ui/Card';
 import '../../public/css/Tutorial.css';
 
 export default class Tutorial extends Component {
