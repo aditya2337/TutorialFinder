@@ -126,21 +126,27 @@ router
 
   // tutorial links
   .get('/tutorial', function (req, res, next) {
-    Tutorial.db.collection('tutorialFinderTutorials').find().toArray((err, users) => {
+    Tutorial.db.collection('tutorialFinderTutorials').find().toArray((err, tutorials) => {
       if (err) res.sendStatus(400);
-      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Credentials', true);
+      res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
       res.json({title: 'All Tutorials',
-        users});
+        tutorials});
+    });
+  })
+  .get('/tutorial/:user_id', function (req, res, next) {
+    const userId = req.params.user_id;
+    Tutorial.db.collection('tutorialFinderTutorials').find({userId}).toArray((err, tutorials) => {
+      if (err) res.sendStatus(400);
+      res.header('Access-Control-Allow-Credentials', true);
+      res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+      res.json({title: 'User Tutorial',
+        tutorials});
     });
   })
   .post('/tutorial', (req, res, next) => {
-    // Tutorial.db.collection('tutorialFinderTutorials')
-    // .insert({tutorialLink, tutorialTitle, demoLink, githubLink, typeOfTutorials, image}, (err, doc) => {
-    //   if (err) res.send(err);
-    //   res.send(doc);
-    // });
-
     res.header('Access-Control-Allow-Credentials', true);
     res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -152,6 +158,7 @@ router
     newTutorial.githubLink = req.query.githubLink;
     newTutorial.type = req.query.typeOfTutorials;
     newTutorial.image = req.query.image;
+    newTutorial.userId = req.query.userId;
     // save the user
     newTutorial.save(function (err) {
       if (err) {
