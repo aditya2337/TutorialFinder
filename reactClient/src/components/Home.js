@@ -61,7 +61,7 @@ class Home extends Component {
     return (
       <div className='container'>
         {tutorials.map(tutorial =>
-          <Tutorial title={tutorial.title} imgURI={tutorial.image} key={tutorial._id} />
+          <Tutorial title={tutorial.title} imgURI={tutorial.image} key={tutorial._id} fullObject={tutorial} />
         )}
       </div>
     );
