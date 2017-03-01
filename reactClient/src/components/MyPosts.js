@@ -24,17 +24,15 @@ class MyPosts extends Component {
   componentWillReceiveProps (nextProps) {
     if (!Array.isArray(nextProps.posts)) {
       const id = nextProps.posts.user[0]._id;
-      if (nextProps.selectedSession !== this.props.selectedSession) {
-        fetch(`http://localhost:3001/users/tutorial/${id}`, {
-          method: 'GET',
-          credentials: 'include'
-        })
-        .then(response => response.json())
-        .then(json => {
-          this.setState({ tutorials: json.tutorials });
-          console.log(json);
-        });
-      }
+      fetch(`http://localhost:3001/users/tutorial/${id}`, {
+        method: 'GET',
+        credentials: 'include'
+      })
+      .then(response => response.json())
+      .then(json => {
+        this.setState({ tutorials: json.tutorials });
+        console.log(json);
+      });
       if (!nextProps.posts.authenticated) {
         this.setState({ isLoggedIn: false });
       }
